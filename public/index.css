@@ -1,14 +1,81 @@
-.hide {
-  display: none;
+* {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #16161a;
+  color: #f0f0f0;
+}
+
+#app {
+  width: 50vw;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 30px 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
 }
 
 .actions {
   margin-top: 1.25rem;
-}
-
-ul {
+  align-self: center;
   list-style-type: none;
   display: flex;
   margin: 0;
   padding: 0;
+}
+
+.actions li {
+  margin-right: 20px;
+}
+
+.actions li button {
+  /* width: 60px;
+  height: 60px; */
+  font-size: 80px;
+  padding: 10px;
+  width: 200px;
+  background: black;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.actions li button:hover {
+  background: #f0f0f0;
+}
+
+.result-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.result {
+  text-align: center;
+  font-size: 50px;
+}
+
+.result-container p:nth-of-type(1) {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.winner {
+  text-align: center;
+  margin-top: 50px;
+  text-transform: uppercase;
+  font-size: 25px;
+  color: #7f5af0;
+  font-weight: bold;
 }

@@ -1,69 +1,88 @@
+// import { Result, Role, RPSEnum } from '../enums/rpsEnum';
 import type { RPS } from '../types/RPS';
 
-enum RPSEnum {
+// Enums
+export enum RPSEnum {
   Rock = 'rock',
   Paper = 'paper',
   Scissors = 'scissors',
 }
 
-enum Result {
+export enum RPSEmojiEnum {
+  rock = '✊',
+  paper = '🤚',
+  scissors = '✌️',
+}
+
+export enum Result {
   Draw = 'Draw',
   Win = 'You win!',
   Lose = 'You lose!',
 }
 
-// Data
-const mainContainer = document.querySelector<HTMLElement>('main');
-const playBtn = document.querySelector<HTMLButtonElement>('.btn-play');
-const rpsActions = document.querySelectorAll<HTMLLIElement>('.actions li');
+export enum Role {
+  Null,
+  User = 'user',
+  Computer = 'computer',
+}
 
+// Data
+const rpsActions = document.querySelectorAll<HTMLLIElement>('.actions li');
 const userResult =
   document.querySelector<HTMLParagraphElement>('.user .result');
 const computerResult =
   document.querySelector<HTMLParagraphElement>('.computer .result');
 const winnerContainer = document.querySelector<HTMLParagraphElement>('.winner');
 
-// Events
-playBtn?.addEventListener('click', () => {
-  mainContainer?.classList.remove('hide');
-});
-
-rpsActions.forEach((action) => {
-  action.addEventListener('click', () => {
-    const userAction: RPS = action.dataset.action as RPS;
-    const computerAction: RPS = getRandomRPS();
-    const result: Result | null = checkWinner(userAction, computerAction);
-    displayResult(userAction, computerAction, result);
-  });
-});
-
 // Methods
-const checkWinner = (userAction: RPS, computerAction: RPS): Result | null => {
-  if (userAction === computerAction) return Result.Draw;
+const play = (action: HTMLLIElement): void => {
+  const userChoice = <RPS>action.dataset.action;
+  const computerChoice: RPS = getComputerChoice();
+  const winner: Role = compareChoices(userChoice, computerChoice);
+  showResult(userChoice, computerChoice, winner);
+};
 
-  switch (userAction) {
+const compareChoices = (userChoice: RPS, computerChoice: RPS): Role => {
+  if (userChoice === computerChoice) return Role.Null;
+  switch (userChoice) {
     case RPSEnum.Rock:
-      return computerAction === RPSEnum.Scissors ? Result.Win : Result.Lose;
+      return computerChoice === RPSEnum.Scissors ? Role.User : Role.Computer;
     case RPSEnum.Paper:
-      return computerAction === RPSEnum.Rock ? Result.Win : Result.Lose;
+      return computerChoice === RPSEnum.Rock ? Role.User : Role.Computer;
     case RPSEnum.Scissors:
-      return computerAction === RPSEnum.Paper ? Result.Win : Result.Lose;
+      return computerChoice === RPSEnum.Paper ? Role.User : Role.Computer;
     default:
-      return null;
+      throw new Error('Invalid choice');
   }
 };
 
-const displayResult = (
-  userAction: RPS,
-  computerAction: RPS,
-  result: Result | null
+const showResult = (
+  userChoice: RPS,
+  computerChoice: RPS,
+  winner: Role
 ): void => {
-  if (userResult) userResult.textContent = userAction;
-  if (computerResult) computerResult.textContent = computerAction;
-  if (winnerContainer) winnerContainer.textContent = result;
+  if (!userResult) return;
+  if (!computerResult) return;
+  if (!winnerContainer) return;
+
+  if (winner === Role.Null) {
+    winnerContainer.textContent = Result.Draw;
+  } else if (winner === Role.User) {
+    winnerContainer.textContent = Result.Win;
+  } else {
+    winnerContainer.textContent = Result.Lose;
+  }
+
+  userResult.textContent = RPSEmojiEnum[userChoice];
+  computerResult.textContent = RPSEmojiEnum[computerChoice];
 };
 
-const getRandomRPS = (): RPSEnum => {
+const getComputerChoice = (): RPSEnum => {
   const index = Math.floor(Math.random() * Object.keys(RPSEnum).length);
   return Object.values(RPSEnum)[index];
 };
+
+// Events
+rpsActions.forEach((action: HTMLLIElement) => {
+  action.addEventListener('click', () => play(action));
+});
